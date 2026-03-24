@@ -14,6 +14,8 @@ import com.vitorcamilodev.commerce.entities.Product;
 import com.vitorcamilodev.commerce.repositories.ProductRepository;
 import com.vitorcamilodev.commerce.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ProductService {
 
@@ -39,6 +41,18 @@ public class ProductService {
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
+	}
+	
+	@Transactional
+	public ProductDTO update(Long id, ProductDTO dto) {
+		try {
+			Product entity = repository.getReferenceById(id);
+			copyDtoToEntity(dto, entity);
+			entity = repository.save(entity);
+			return new ProductDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		}
 	}
 	
 	private void copyDtoToEntity(ProductDTO dto, Product entity) {
