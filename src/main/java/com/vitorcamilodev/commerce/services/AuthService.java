@@ -1,6 +1,5 @@
 package com.vitorcamilodev.commerce.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vitorcamilodev.commerce.entities.User;
@@ -9,8 +8,11 @@ import com.vitorcamilodev.commerce.services.exceptions.ForbiddenException;
 @Service
 public class AuthService {
 
-	@Autowired
 	private UserService userService;
+	
+	public AuthService(UserService userService) {
+		this.userService = userService;
+	}
 	
 	public void validateSelfOrAdmin(Long userId) {
 		User me = userService.authenticated();

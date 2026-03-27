@@ -2,7 +2,6 @@ package com.vitorcamilodev.commerce.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +20,11 @@ import com.vitorcamilodev.commerce.repositories.UserRepository;
 @Service
 public class UserService implements UserDetailsService {
 
-	@Autowired
 	private UserRepository repository;
+	
+	public UserService(UserRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

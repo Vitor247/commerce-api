@@ -2,7 +2,6 @@ package com.vitorcamilodev.commerce.controllers;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +28,11 @@ import jakarta.validation.Valid;
 @RequestMapping(value = "/products")
 public class ProductController {
 
-	@Autowired
 	private ProductService service;
+	
+	public ProductController(ProductService service) {
+		this.service = service;
+	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {

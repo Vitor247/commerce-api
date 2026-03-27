@@ -1,6 +1,5 @@
 package com.vitorcamilodev.commerce.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +13,12 @@ import com.vitorcamilodev.commerce.services.UserService;
 @RequestMapping(value = "/users")
 public class UserController {
 
-	@Autowired
 	private UserService service;
 
+	public UserController(UserService service) {
+		this.service = service;
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
 	@GetMapping(value = "/me")
 	public ResponseEntity<UserDTO> getMe() {
