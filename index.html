@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Produtos</title>
+</head>
+<body>
+
+    <h1>CRUD de Produtos</h1>
+    
+    <!-- FORM -->
+    <h2>Criar / Atualizar</h2>
+    <input type="hidden" id="id">
+    <input type="text" id="name" placeholder="Nome">
+    <input type="number" id="price" placeholder="Preço">
+    <button onclick="salvar()">Salvar</button>
+
+    <hr>
+
+    <!-- LISTA -->
+    <h2>Lista de Produtos</h2>
+    <button onclick="listar()">Atualizar Lista</button>
+    <ul id="lista"></ul>
+
+    <script>
+        const API = "http://localhost:8080/products";
+
+        // LISTAR
+        function listar() {
+            fetch(API)
+                .then(res => res.json())
+                .then(data => {
+                    const lista = document.getElementById("lista");
+                    lista.innerHTML = "";
+
+                    data.content.forEach(p => {
+                        const li = document.createElement("li");
+
+                        li.innerHTML = `
+                            ${p.id} - ${p.name} - R$ ${p.price}
+                            <button onclick="editar(${p.id}, '${p.name}', ${p.price})">Editar</button>
+                            <button onclick="deletar(${p.id})">Excluir</button>
+                        `;
+
+                        lista.appendChild(li);
+                    });
+                });
+        }
+
+        // SALVAR (POST ou PUT)
+        function salvar() {
+            const id = document.getElementById("id").value;
+            const name = document.getElementById("name").value;
+            const price = document.getElementById("price").value;
+
+            const produto = {
+                name: name,
+                price: parseFloat(price)
+            };
+
+            if (id) {
+                // PUT
+                fetch(`${API}/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(produto)
+                })
+                .then(() => {
+                    limpar();
+                    listar();
+                });
+            } else {
+                // POST
+                fetch(API, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(produto)
+                })
+                .then(() => {
+                    limpar();
+                    listar();
+                });
+            }
+        }
+
+        // EDITAR (preenche o form)
+        function editar(id, name, price) {
+            document.getElementById("id").value = id;
+            document.getElementById("name").value = name;
+            document.getElementById("price").value = price;
+        }
+
+        // DELETAR
+        function deletar(id) {
+            fetch(`${API}/${id}`, {
+                method: "DELETE"
+            })
+            .then(() => listar());
+        }
+
+        // LIMPAR FORM
+        function limpar() {
+            document.getElementById("id").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("price").value = "";
+        }
+
+        // CARREGAR AUTOMATICAMENTE
+        listar();
+    </script>
+
+</body>
+</html>
